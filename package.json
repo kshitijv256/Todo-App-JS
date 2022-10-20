@@ -20,7 +20,7 @@
       "prettier --write ."
     ]
   },
-  "author": "",
+  "author": "Kshitij Verma",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/kshitijv256/ejs_templates/issues"

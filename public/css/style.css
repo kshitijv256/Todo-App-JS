@@ -1,20 +1,21 @@
-body{
-    padding-left: 10px;
-    color:rgb(177, 213, 132);
-    background-color: rgb(52, 52, 60);
-    font-family: "Segoe UI", Arial, sans-serif;
+body {
+  padding-left: 10px;
+  color: rgb(177, 213, 132);
+  background-color: rgb(52, 52, 60);
+  font-family: "Segoe UI", Arial, sans-serif;
 }
-h1{
-    padding: 20px;
+h1 {
+  padding: 20px;
 }
-table{
-    height: auto;
-    margin: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+table {
+  height: auto;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
-td, th{
-    padding: 10px;
-    border-bottom: 1px solid rgba(155, 176, 121, 0.401);
+td,
+th {
+  padding: 10px;
+  border-bottom: 1px solid rgba(155, 176, 121, 0.401);
 }

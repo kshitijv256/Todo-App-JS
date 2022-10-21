@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.todo-item:hover .delete-icon{
-    display: block;
+.todo-item:hover .delete-icon {
+  display: block;
 }

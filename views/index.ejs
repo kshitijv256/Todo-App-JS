@@ -7,32 +7,28 @@
     <link rel="stylesheet" href="./css/style.css">
     <title>Home Page</title>
 </head>
-<body>
-    <%- include('header.ejs') %>
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Title</th>
-            <th>Due Date</th>
-            <th>Completed</th>
-        </tr>
-        <% for(var i = 0; i < allTodos.length; i++) { %>
-            <tr>
-                <td>
-                    <%= allTodos[i].id %>
-                </td>
-                <td>
-                    <%= allTodos[i].title %>
-                </td>
-                <td>
-                    <%= allTodos[i].dueDate %>
-                </td>
-                <td>
-                    <%= allTodos[i].completed %>
-                </td>
-            </tr>
-        <% } %>
-    </table>
-    <%- include('footer.ejs') %>
+<body class="bg-gray-800 text-gray-100">
+    <div class="grid grid-cols-6 p-3 gap-2">
+        <div class="col-start-3 col-span-2">
+
+            <%- include('header.ejs') %>
+            <form class="py-2 my-3">
+                <div class="flex gap-2 my-2">
+                    <div class="flex-auto">
+                        <input type="text" class="border border-gray-700 text-gray-700 w-full rounded h-10 px-1" placeholder="What are you up to?">
+                    </div>
+                    <div class="flex-auto">
+                        <input type="date" class="border border-gray-700 text-gray-500 w-full rounded h-10 px-1" >
+                    </div>
+                    <div class="flex-none ">
+                        <button class="bg-green-400 text-gray-700 rounded px-3 py-2 hover:shadow-md hover:bg-green-500 hover:text-gray-200" type="submit">Add</button>
+                    </div>
+                </div>
+            </form>
+            <%- include('todos.ejs') %>
+            
+            <!-- <%- include('footer.ejs') %> -->
+        </div>
+    </div>
 </body>
 </html>

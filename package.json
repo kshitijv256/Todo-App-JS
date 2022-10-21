@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "prepare": "husky install"
@@ -41,6 +41,7 @@
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "sequelize-cli": "^6.5.1",
-    "supertest": "^6.3.0"
+    "supertest": "^6.3.0",
+    "tailwindcss": "^3.2.0"
   }
 }

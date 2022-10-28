@@ -1,2 +1,3 @@
-# Todo-App-JS
+## Todo-App-JS
 UI is implemented for the previous todo-app which was CLI based
+using EJS and tailwindCSS

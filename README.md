@@ -4,12 +4,13 @@ using EJS and tailwindCSS
 
 ### Steps
 
-Install all dependencies using
+1. Install all dependencies using
 `npm install`
 
-change config file for sequelize to match your postgres db details
+2. Change config file for sequelize to match your postgres db details
 
-change `nodemon` to `node`
+3. Change `nodemon` to `node`
 if you are not using nodemon
-run
+
+4. Run app using `npm start`
 

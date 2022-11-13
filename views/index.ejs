@@ -5,6 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/style.css" />
+    <script>
+      function updateTodo(id){
+        const status = document.getElementById(`todo-checkbox-${id}`).checked;
+        fetch(`/todos/${id}`,{
+          method: "put",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            completed: status,
+          }),
+        }).then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+      function deleteTodo(id){
+        fetch(`/todos/${id}`, {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+    </script>
     <title>Home Page</title>
   </head>
 
@@ -12,11 +46,12 @@
     <div class="grid grid-cols-6 p-3 gap-2">
       <div class="col-start-3 col-span-2">
         <%- include('header.ejs') %>
-        <form class="py-2 my-3">
+        <form class="py-2 my-3" action="/todos" method="post">
           <div class="flex gap-2 my-2">
             <div class="flex-auto">
               <input
                 type="text"
+                name="title"
                 class="border border-gray-700 text-gray-700 w-full rounded h-10 px-1"
                 placeholder="What are you up to?"
               />
@@ -24,6 +59,7 @@
             <div class="flex-auto">
               <input
                 type="date"
+                name="dueDate"
                 class="border border-gray-700 text-gray-500 w-full rounded h-10 px-1"
               />
             </div>
@@ -37,7 +73,12 @@
             </div>
           </div>
         </form>
-        <%- include('todos.ejs') %>
+        <div>
+          <%- include('todos.ejs', {title: "Overdue", data: overdueItems}) %>
+          <%- include('todos.ejs', {title: "Due Today", data: dueTodayItems}) %>
+          <%- include('todos.ejs', {title: "Due Later", data: dueLaterItems}) %>
+          <%- include('todos.ejs', {title: "Completed Items", data: completedItems}) %>
+        </div>
       </div>
     </div>
   </body>

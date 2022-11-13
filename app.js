@@ -14,11 +14,21 @@ app.get("/", async function (request, response) {
   const overdueItems = await Todo.overdue();
   const dueTodayItems = await Todo.dueToday();
   const dueLaterItems = await Todo.dueLater();
-  const allTodos = await Todo.getTodos();
+  const completedItems = await Todo.completed();
   if (request.accepts("html")) {
-    response.render("index", { overdueItems, dueTodayItems, dueLaterItems });
+    response.render("index", {
+      overdueItems,
+      dueTodayItems,
+      dueLaterItems,
+      completedItems,
+    });
   } else {
-    response.json(allTodos);
+    response.json({
+      overdueItems,
+      dueTodayItems,
+      dueLaterItems,
+      completedItems,
+    });
   }
 });
 
@@ -56,10 +66,10 @@ app.post("/todos", async function (request, response) {
   }
 });
 
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
+app.put("/todos/:id/", async function (request, response) {
   const todo = await Todo.findByPk(request.params.id);
   try {
-    const updatedTodo = await todo.markAsCompleted();
+    const updatedTodo = await todo.setCompletionStatus(request.body.completed);
     return response.json(updatedTodo);
   } catch (error) {
     console.log(error);
@@ -68,24 +78,10 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
 });
 
 app.delete("/todos/:id", async function (request, response) {
-  console.log("We have to delete a Todo with ID: ", request.params.id);
+  console.log("Deleting a Todo with ID: ", request.params.id);
   try {
-    // check if todo exists for given id
-    let deleted = false;
-    const todo = await Todo.findByPk(request.params.id);
-    if (todo) {
-      // Delete the todo with the given index
-      await Todo.destroy({
-        where: { id: request.params.id },
-      });
-      // Check the database any todo with given id is present
-      const stillThere = await Todo.findByPk(request.params.id);
-      // if todo is present, deletion failed so return false else return true
-      deleted = stillThere ? false : true;
-    } else {
-      deleted = false;
-    }
-    return response.send(deleted);
+    await Todo.remove(request.params.id);
+    return response.json({ success: true });
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);

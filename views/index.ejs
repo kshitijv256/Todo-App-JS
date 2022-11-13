@@ -6,9 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/style.css" />
     <script>
-      function updateTodo(id) {
-        fetch(`/todos/${id}/markAsCompleted`,{
+      function updateTodo(id){
+        const status = document.getElementById(`todo-checkbox-${id}`).checked;
+        fetch(`/todos/${id}`,{
           method: "put",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            completed: status,
+          }),
+        }).then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+      function deleteTodo(id){
+        fetch(`/todos/${id}`, {
+          method: "delete",
           headers: {
             "Content-Type": "application/json",
           },
@@ -59,6 +77,7 @@
           <%- include('todos.ejs', {title: "Overdue", data: overdueItems}) %>
           <%- include('todos.ejs', {title: "Due Today", data: dueTodayItems}) %>
           <%- include('todos.ejs', {title: "Due Later", data: dueLaterItems}) %>
+          <%- include('todos.ejs', {title: "Completed Items", data: completedItems}) %>
         </div>
       </div>
     </div>

@@ -1,62 +1,21 @@
-<div>
-    <h5 class="font-semibold">Overdue</h5>
+<h5 class="font-semibold"><%= title %>></h5>
     <ul class="list-none">
-  <% for(var i = 0; i < overdueItems.length; i++) { %>
+  <% for(var i = 0; i < data.length; i++) { %>
     <li class="todo-item">
       <div
         class="flex items-center w-fit my-2 px-2 py-1 rounded hover:shadow-md hover:bg-slate-700"
       >
         <input
-          id="todo-checkbox-o<%= i+1 %>"
+          id="todo-checkbox-<%= data[i].id %>"
           type="checkbox"
           class="w-4 h-4 text-blue-600 rounded"
+          <%=data[i].completed ? "checked" : "" %>
         />
-        <label class="text-gray-300 cursor-pointer ml-2" for="todo-checkbox-o<%= i+1 %>">
-          <%- overdueItems[i].title %>
+        <label class="text-gray-300 cursor-pointer ml-2" for="todo-checkbox-<%= data[i].id %>">
+          <%- data[i].title %>
         </label>
         <%- include('deleteIcon.ejs') %>
       </div>
     </li>
     <% } %>
     </ul>
-    <h5 class="font-semibold">Due Today</h5>
-    <ul class="list-none">
-  <% for(var i = 0; i < dueTodayItems.length; i++) { %>
-    <li class="todo-item">
-      <div
-        class="flex items-center w-fit my-2 px-2 py-1 rounded hover:shadow-md hover:bg-slate-700"
-      >
-        <input
-          id="todo-checkbox-t<%= i+1 %>"
-          type="checkbox"
-          class="w-4 h-4 text-blue-600 rounded"
-        />
-        <label class="text-gray-300 cursor-pointer ml-2" for="todo-checkbox-t<%= i+1 %>">
-          <%- dueTodayItems[i].title %>
-        </label>
-        <%- include('deleteIcon.ejs') %>
-      </div>
-    </li>
-    <% } %>
-    </ul>
-    <h5 class="font-semibold">Due Later</h5>
-    <ul class="list-none">
-  <% for(var i = 0; i < dueLaterItems.length; i++) { %>
-    <li class="todo-item">
-      <div
-        class="flex items-center w-fit my-2 px-2 py-1 rounded hover:shadow-md hover:bg-slate-700"
-      >
-        <input
-          id="todo-checkbox-l<%= i+1 %>"
-          type="checkbox"
-          class="w-4 h-4 text-blue-600 rounded"
-        />
-        <label class="text-gray-300 cursor-pointer ml-2" for="todo-checkbox-l<%= i+1 %>">
-          <%- dueLaterItems[i].title %>
-        </label>
-        <%- include('deleteIcon.ejs') %>
-      </div>
-    </li>
-    <% } %>
-    </ul>
-</div>

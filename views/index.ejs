@@ -4,8 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <link rel="stylesheet" href="./css/style.css" />
     <script>
+      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
       function updateTodo(id){
         const status = document.getElementById(`todo-checkbox-${id}`).checked;
         fetch(`/todos/${id}`,{
@@ -15,6 +17,7 @@
           },
           body: JSON.stringify({
             completed: status,
+            _csrf: token
           }),
         }).then((res) => {
           if (res.ok) {
@@ -30,6 +33,9 @@
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            _csrf: token
+          }),
         }).then((res) => {
           if (res.ok) {
             window.location.reload();
@@ -47,6 +53,7 @@
       <div class="col-start-3 col-span-2">
         <%- include('header.ejs') %>
         <form class="py-2 my-3" action="/todos" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="flex gap-2 my-2">
             <div class="flex-auto">
               <input

@@ -45,13 +45,14 @@
         });
       }
     </script>
-    <title>Home Page</title>
+    <title><%= title %></title>
   </head>
 
   <body class="bg-gray-800 text-gray-100">
     <div class="grid grid-cols-6 p-3 gap-2">
       <div class="col-start-3 col-span-2">
         <%- include('header.ejs') %>
+        <p>New here? <a href="/signup">Sign-up</a></p>
         <form class="py-2 my-3" action="/todos" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="flex gap-2 my-2">

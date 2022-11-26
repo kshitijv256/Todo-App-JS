@@ -24,6 +24,7 @@ app.get("/", async function (request, response) {
   const completedItems = await Todo.completed();
   if (request.accepts("html")) {
     response.render("index", {
+      title: "Home page",
       overdueItems,
       dueTodayItems,
       dueLaterItems,
@@ -39,6 +40,13 @@ app.get("/", async function (request, response) {
       csrfToken: request.csrfToken(),
     });
   }
+});
+
+app.get("/signup", (request, response) => {
+  response.render("signup", {
+    title: "Signup",
+    csrfToken: request.csrfToken(),
+  });
 });
 
 app.get("/todos", async function (_request, response) {

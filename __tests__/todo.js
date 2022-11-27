@@ -26,7 +26,7 @@ describe("Todo Application", function () {
   });
   // test adding new todos
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
-    const res = await agent.get("/todos");
+    const res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
     const response = await agent.post("/todos").send({
       title: "Buy milk",
@@ -39,7 +39,7 @@ describe("Todo Application", function () {
 
   // test the update endpoint for changing the completion status
   test("Update the completed field of the given todo", async () => {
-    const res = await agent.get("/todos");
+    const res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "wash dishes",
@@ -71,7 +71,7 @@ describe("Todo Application", function () {
 
   // test the fetching of all todos
   test("Fetches all todos in the database using /todos endpoint", async () => {
-    const res = await agent.get("/todos");
+    const res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "Buy xbox",
@@ -93,7 +93,7 @@ describe("Todo Application", function () {
 
   // testing the deletion of a todo
   test("testimg the delete endpoint", async () => {
-    const res = await agent.get("/todos");
+    const res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "Buy Momos",

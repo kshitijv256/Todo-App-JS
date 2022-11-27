@@ -169,4 +169,16 @@ app.delete("/todos/:id", async function (request, response) {
   }
 });
 
+//testing route
+app.get("/test_todos", async function (_request, response) {
+  console.log("Processing list of all Todos ...");
+  try {
+    const todos = await Todo.findAll();
+    response.send(todos);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
 module.exports = app;

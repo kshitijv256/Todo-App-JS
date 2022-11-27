@@ -93,7 +93,7 @@ describe("Todo Application", function () {
 
   // testing the deletion of a todo
   test("testimg the delete endpoint", async () => {
-    const res = await agent.get("/signup");
+    const res = await agent.get("/signup"); // using the signup page to get the csrf token
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "Buy Momos",

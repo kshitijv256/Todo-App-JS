@@ -10,7 +10,7 @@ const path = require("path");
 const passport = require("passport"); // using passport
 const LocalStrategy = require("passport-local"); // using passport-local as strategy
 const session = require("express-session");
-// const connectEnsureLogin = require("connect-ensure-login");
+const connectEnsureLogin = require("connect-ensure-login");
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
@@ -85,29 +85,33 @@ app.get("/signup", (request, response) => {
   });
 });
 
-app.get("/todos", async function (request, response) {
-  const overdueItems = await Todo.overdue();
-  const dueTodayItems = await Todo.dueToday();
-  const dueLaterItems = await Todo.dueLater();
-  const completedItems = await Todo.completed();
-  if (request.accepts("html")) {
-    response.render("todo", {
-      title: "Todos",
-      overdueItems,
-      dueTodayItems,
-      dueLaterItems,
-      completedItems,
-      csrfToken: request.csrfToken(),
-    });
-  } else {
-    response.json({
-      overdueItems,
-      dueTodayItems,
-      dueLaterItems,
-      completedItems,
-    });
+app.get(
+  "/todos",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    const overdueItems = await Todo.overdue();
+    const dueTodayItems = await Todo.dueToday();
+    const dueLaterItems = await Todo.dueLater();
+    const completedItems = await Todo.completed();
+    if (request.accepts("html")) {
+      response.render("todo", {
+        title: "Todos",
+        overdueItems,
+        dueTodayItems,
+        dueLaterItems,
+        completedItems,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({
+        overdueItems,
+        dueTodayItems,
+        dueLaterItems,
+        completedItems,
+      });
+    }
   }
-});
+);
 
 app.get("/todos/:id", async function (request, response) {
   try {
@@ -128,7 +132,12 @@ app.post("/users", async (request, response) => {
       email: request.body.email,
       password: request.body.password,
     });
-    response.redirect("/");
+    request.login(user, (err) => {
+      if (err) {
+        console.log(err);
+      }
+      response.redirect("/todos");
+    });
   } catch (error) {
     console.log(error);
   }

@@ -72,13 +72,27 @@ passport.deserializeUser((id, done) => {
 app.set("view engine", "ejs");
 
 app.get("/", async function (request, response) {
+  response.render("index", {
+    title: "Todo App",
+    csrfToken: request.csrfToken(),
+  });
+});
+
+app.get("/signup", (request, response) => {
+  response.render("signup", {
+    title: "Signup",
+    csrfToken: request.csrfToken(),
+  });
+});
+
+app.get("/todos", async function (request, response) {
   const overdueItems = await Todo.overdue();
   const dueTodayItems = await Todo.dueToday();
   const dueLaterItems = await Todo.dueLater();
   const completedItems = await Todo.completed();
   if (request.accepts("html")) {
-    response.render("index", {
-      title: "Home page",
+    response.render("todo", {
+      title: "Todos",
       overdueItems,
       dueTodayItems,
       dueLaterItems,
@@ -95,24 +109,6 @@ app.get("/", async function (request, response) {
   }
 });
 
-app.get("/signup", (request, response) => {
-  response.render("signup", {
-    title: "Signup",
-    csrfToken: request.csrfToken(),
-  });
-});
-
-app.get("/todos", async function (_request, response) {
-  console.log("Processing list of all Todos ...");
-  try {
-    const todos = await Todo.findAll();
-    response.send(todos);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
 app.get("/todos/:id", async function (request, response) {
   try {
     const todo = await Todo.findByPk(request.params.id);
@@ -125,7 +121,8 @@ app.get("/todos/:id", async function (request, response) {
 
 app.post("/users", async (request, response) => {
   try {
-    await User.create({
+    // eslint-disable-next-line no-unused-vars
+    const user = await User.create({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,

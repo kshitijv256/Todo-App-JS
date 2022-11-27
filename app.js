@@ -1,21 +1,75 @@
 const express = require("express");
-const csrf = require("csurf");
+const csrf = require("csurf"); // using csrf
 // const csrf = require("tiny-csrf");
 const app = express();
-const { Todo } = require("./models");
+const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const path = require("path");
+
+const passport = require("passport"); // using passport
+const LocalStrategy = require("passport-local"); // using passport-local as strategy
+const session = require("express-session");
+// const connectEnsureLogin = require("connect-ensure-login");
+
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("some_secret"));
-// app.use(csrf("123456789iamasecret987654321look", // secret -- must be 32 bits or chars in length
 // ["POST", "PUT", "DELETE"]));
 app.use(csrf({ cookie: true }));
-const path = require("path");
-
-app.set("view engine", "ejs");
+// app.use(csrf("123456789iamasecret987654321look", // secret -- must be 32 bits or chars in length
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: "another-secret",
+    cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
+  })
+);
+
+// passport config
+app.use(passport.initialize());
+app.use(passport.session());
+
+// authentication
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    (username, password, done) => {
+      User.findOne({
+        where: {
+          email: username,
+          password: password,
+        },
+      })
+        .then((user) => {
+          return done(null, user);
+        })
+        .catch((err) => {
+          return done(err);
+        });
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findByPk(id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err) => {
+      done(err, null);
+    });
+});
+
+app.set("view engine", "ejs");
 
 app.get("/", async function (request, response) {
   const overdueItems = await Todo.overdue();
@@ -37,7 +91,6 @@ app.get("/", async function (request, response) {
       dueTodayItems,
       dueLaterItems,
       completedItems,
-      csrfToken: request.csrfToken(),
     });
   }
 });
@@ -67,6 +120,20 @@ app.get("/todos/:id", async function (request, response) {
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
+  }
+});
+
+app.post("/users", async (request, response) => {
+  try {
+    await User.create({
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      email: request.body.email,
+      password: request.body.password,
+    });
+    response.redirect("/");
+  } catch (error) {
+    console.log(error);
   }
 });
 

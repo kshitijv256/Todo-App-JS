@@ -1,5 +1,0 @@
-packages to install
-
-npm i passport passport-local connect-ensure-login express-session --save
-
-npm i bcrypt --save

@@ -59,8 +59,8 @@ passport.use(
             return done(null, false, { message: "Incorrect password" });
           }
         })
-        .catch((err) => {
-          return done(err);
+        .catch(() => {
+          return done(null, false, { message: "User does not exists" });
         });
     }
   )

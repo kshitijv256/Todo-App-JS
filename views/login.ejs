@@ -33,13 +33,13 @@
               class="rounded border-2 border-gray-500 p-2 w-full text-gray-900"
             />
           </div>
-          <div class="py-3">
+          <div class="py-3 flex flex-row">
             <button
               type="submit"
               class="py-2 px-6 rounded font-medium bg-green-600 hover:bg-green-800"
             >
               Sign In
-            </button>
+            </button><p class="py-2 px-4">New here? <a href="/signup">Sign-up</a></p>
           </div>
         </form>
         <% if(messages && messages.error && messages.error.length > 0)  { %>

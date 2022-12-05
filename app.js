@@ -171,8 +171,19 @@ app.get(
 
 app.post("/users", async (request, response) => {
   const hashedPassword = await bcrypt.hash(request.body.password, saltRounds);
+  if (request.body.firstName == "") {
+    request.flash("error", "First Name is required");
+    return response.redirect("/signup");
+  }
+  if (request.body.email == "") {
+    request.flash("error", "Invalid Email");
+    return response.redirect("/signup");
+  }
+  if (request.body.password.length < 6) {
+    request.flash("error", "Password must be at least 6 characters");
+    return response.redirect("/signup");
+  }
   try {
-    // eslint-disable-next-line no-unused-vars
     const user = await User.create({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
@@ -186,7 +197,8 @@ app.post("/users", async (request, response) => {
       response.redirect("/todos");
     });
   } catch (error) {
-    console.log(error);
+    request.flash("error", "Email already registered");
+    return response.redirect("/signup");
   }
 });
 
@@ -194,6 +206,14 @@ app.post(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
+    if (request.body.title == "") {
+      request.flash("error", "Todo must have a title");
+      return response.redirect("/todos");
+    }
+    if (request.body.dueDate == "") {
+      request.flash("error", "Please provide a due date");
+      return response.redirect("/todos");
+    }
     try {
       await Todo.addTodo({
         title: request.body.title,

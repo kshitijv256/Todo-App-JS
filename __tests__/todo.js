@@ -24,9 +24,23 @@ describe("Todo Application", function () {
       console.log(error);
     }
   });
+
+  test("Sign up", async () => {
+    let res = await agent.get("/signup");
+    const csrfToken = extractCsrfToken(res);
+    res = await agent.post("/users").send({
+      _csrf: csrfToken,
+      firstName: "Test",
+      lastName: "User 1",
+      email: "user1@test.com",
+      password: "password",
+    });
+    expect(res.statusCode).toBe(302);
+  });
+
   // test adding new todos
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
-    const res = await agent.get("/signup");
+    const res = await agent.get("/");
     const csrfToken = extractCsrfToken(res);
     const response = await agent.post("/todos").send({
       title: "Buy milk",
@@ -39,7 +53,7 @@ describe("Todo Application", function () {
 
   // test the update endpoint for changing the completion status
   test("Update the completed field of the given todo", async () => {
-    const res = await agent.get("/signup");
+    const res = await agent.get("/");
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "wash dishes",
@@ -71,7 +85,7 @@ describe("Todo Application", function () {
 
   // test the fetching of all todos
   test("Fetches all todos in the database using /todos endpoint", async () => {
-    const res = await agent.get("/signup");
+    const res = await agent.get("/");
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "Buy xbox",
@@ -92,8 +106,8 @@ describe("Todo Application", function () {
   });
 
   // testing the deletion of a todo
-  test("testimg the delete endpoint", async () => {
-    const res = await agent.get("/signup"); // using the signup page to get the csrf token
+  test("testing the delete endpoint", async () => {
+    const res = await agent.get("/"); // using the  page to get the csrf token
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "Buy Momos",

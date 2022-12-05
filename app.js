@@ -13,6 +13,11 @@ const session = require("express-session");
 const connectEnsureLogin = require("connect-ensure-login");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const flash = require("connect-flash");
+
+// eslint-disable-next-line no-undef
+app.set("views", path.join(__dirname, "views"));
+app.use(flash());
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
@@ -51,7 +56,7 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done("Incorrect password");
+            return done(null, false, { message: "Incorrect password" });
           }
         })
         .catch((err) => {
@@ -73,6 +78,11 @@ passport.deserializeUser((id, done) => {
     .catch((err) => {
       done(err, null);
     });
+});
+
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
 });
 
 app.set("view engine", "ejs");
@@ -100,7 +110,10 @@ app.get("/login", (request, response) => {
 
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
   (request, response) => {
     response.redirect("/todos");
   }

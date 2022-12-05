@@ -90,7 +90,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   Todo.init(
     {
-      title: DataTypes.STRING,
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: true,
+        },
+      },
       dueDate: DataTypes.DATEONLY,
       completed: DataTypes.BOOLEAN,
     },

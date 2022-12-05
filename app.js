@@ -117,10 +117,11 @@ app.get(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    const overdueItems = await Todo.overdue();
-    const dueTodayItems = await Todo.dueToday();
-    const dueLaterItems = await Todo.dueLater();
-    const completedItems = await Todo.completed();
+    const userId = request.user.id;
+    const overdueItems = await Todo.overdue(userId);
+    const dueTodayItems = await Todo.dueToday(userId);
+    const dueLaterItems = await Todo.dueLater(userId);
+    const completedItems = await Todo.completed(userId);
     if (request.accepts("html")) {
       response.render("todo", {
         title: "Todos",
@@ -184,8 +185,9 @@ app.post(
       await Todo.addTodo({
         title: request.body.title,
         dueDate: request.body.dueDate,
+        userId: request.user.id,
       });
-      return response.redirect("/");
+      return response.redirect("/todos");
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -216,7 +218,7 @@ app.delete(
   async function (request, response) {
     console.log("Deleting a Todo with ID: ", request.params.id);
     try {
-      await Todo.remove(request.params.id);
+      await Todo.remove(request.params.id, request.user.id);
       return response.json({ success: true });
     } catch (error) {
       console.log(error);

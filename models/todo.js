@@ -15,62 +15,68 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    static async overdue() {
+    static async overdue(userId) {
       return await Todo.findAll({
         where: {
           dueDate: {
             [Op.lt]: new Date(),
           },
+          userId: userId,
           completed: false,
         },
         order: [["id", "ASC"]],
       });
     }
 
-    static async dueToday() {
+    static async dueToday(userId) {
       return await Todo.findAll({
         where: {
           dueDate: {
             [Op.eq]: new Date(),
           },
+          userId: userId,
           completed: false,
         },
         order: [["id", "ASC"]],
       });
     }
 
-    static async dueLater() {
+    static async dueLater(userId) {
       return await Todo.findAll({
         where: {
           dueDate: {
             [Op.gt]: new Date(),
           },
+          userId: userId,
           completed: false,
         },
         order: [["id", "ASC"]],
       });
     }
-    static async completed() {
+    static async completed(userId) {
       return await Todo.findAll({
         where: {
           completed: true,
+          userId: userId,
         },
         order: [["id", "ASC"]],
       });
     }
 
-    static async addTodo({ title, dueDate }) {
+    static async addTodo({ title, dueDate, userId }) {
       return await this.create({
         title: title,
         dueDate: dueDate,
         completed: false,
+        userId: userId,
       });
     }
 
-    static async remove(id) {
+    static async remove(id, userId) {
       return await this.destroy({
         where: {
           id: id,
+          userId: userId,
         },
       });
     }

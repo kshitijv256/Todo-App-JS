@@ -40,7 +40,7 @@ describe("Todo Application", function () {
 
   // test adding new todos
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
-    const res = await agent.get("/");
+    const res = await agent.get("/todos");
     const csrfToken = extractCsrfToken(res);
     const response = await agent.post("/todos").send({
       title: "Buy milk",
@@ -53,7 +53,7 @@ describe("Todo Application", function () {
 
   // test the update endpoint for changing the completion status
   test("Update the completed field of the given todo", async () => {
-    const res = await agent.get("/");
+    const res = await agent.get("/todos");
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "wash dishes",
@@ -63,10 +63,13 @@ describe("Todo Application", function () {
     });
 
     // the above added todo is second in the list of newly added todos
-    const todoID = await agent.get("/test_todos").then((response) => {
-      const parsedResponse = JSON.parse(response.text);
-      return parsedResponse[1]["id"];
-    });
+    const todoID = await agent
+      .get("/todos")
+      .set("Accept", "application/json")
+      .then((response) => {
+        const parsedResponse = JSON.parse(response.text);
+        return parsedResponse.dueTodayItems[1]["id"];
+      });
 
     // Testing for false to true
     const setCompletionResponse = await agent
@@ -83,31 +86,9 @@ describe("Todo Application", function () {
     expect(parsedUpdateResponse2.completed).toBe(false);
   });
 
-  // test the fetching of all todos
-  test("Fetches all todos in the database using /todos endpoint", async () => {
-    const res = await agent.get("/");
-    const csrfToken = extractCsrfToken(res);
-    await agent.post("/todos").send({
-      title: "Buy xbox",
-      dueDate: new Date().toISOString(),
-      completed: false,
-      _csrf: csrfToken,
-    });
-    await agent.post("/todos").send({
-      title: "Buy ps3",
-      dueDate: new Date().toISOString(),
-      completed: false,
-      _csrf: csrfToken,
-    });
-    const response = await agent.get("/test_todos");
-    const parsedResponse = JSON.parse(response.text);
-    expect(parsedResponse.length).toBe(4);
-    expect(parsedResponse[3]["title"]).toBe("Buy ps3");
-  });
-
   // testing the deletion of a todo
   test("testing the delete endpoint", async () => {
-    const res = await agent.get("/"); // using the  page to get the csrf token
+    const res = await agent.get("/todos"); // using the  page to get the csrf token
     const csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
       title: "Buy Momos",
@@ -116,10 +97,14 @@ describe("Todo Application", function () {
       _csrf: csrfToken,
     });
     // get the id of 'Buying Momos' so that we can delete it
-    const todoID = await agent.get("/test_todos").then((response) => {
-      const parsedResponse = JSON.parse(response.text);
-      return parsedResponse[4]["id"];
-    });
+    const todoID = await agent
+      .get("/todos")
+      .set("Accept", "application/json")
+      .then((response) => {
+        const parsedMixedResponse = JSON.parse(response.text);
+        const parsedResponse = parsedMixedResponse.dueTodayItems;
+        return parsedResponse[2]["id"];
+      });
 
     const deleteResponse = await agent
       .delete(`/todos/${todoID}`)

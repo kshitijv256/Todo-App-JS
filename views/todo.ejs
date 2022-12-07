@@ -1,101 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <link rel="stylesheet" href="./css/style.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      function updateTodo(id){
-        const status = document.getElementById(`todo-checkbox-${id}`).checked;
-        fetch(`/todos/${id}`,{
-          method: "put",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            completed: status,
-            _csrf: token
-          }),
-        }).then((res) => {
-          if (res.ok) {
-            window.location.reload();
-          }
-        }).catch((err) => {
-          console.log(err);
-        });
-      }
-      function deleteTodo(id){
-        fetch(`/todos/${id}`, {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            _csrf: token
-          }),
-        }).then((res) => {
-          if (res.ok) {
-            window.location.reload();
-          }
-        }).catch((err) => {
-          console.log(err);
-        });
-      }
-    </script>
-    <title><%= title %></title>
-  </head>
 
-  <body class="bg-gray-800 text-gray-100">
-    <div class="grid grid-cols-6 p-3 gap-2">
-      <div class="col-start-3 col-span-2">
-        <%- include('header.ejs') %>
-        <a href="/signout">Log out</a>
-        <form class="py-2 my-3" action="/todos" method="post">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="<%= csrfToken %>" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    function updateTodo(id) {
+      const status = document.getElementById(`todo-checkbox-${id}`).checked;
+      fetch(`/todos/${id}`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          completed: status,
+          _csrf: token
+        }),
+      }).then((res) => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+    function deleteTodo(id) {
+      fetch(`/todos/${id}`, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _csrf: token
+        }),
+      }).then((res) => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+  </script>
+  <title>
+    <%= title %>
+  </title>
+</head>
+
+<body class="bg-gray-800 text-gray-100">
+  <div class="grid grid-cols-6 p-3 gap-2">
+    <div class="col-start-3 col-span-2">
+      <%- include('header.ejs') %>
+      <div class="flex flex-row">
+        <h1 class="font-semibold pt-5 text-xl">Hello, <%= userName %>
+        </h1>
+        <button
+          class="bg-green-400 text-gray-700 rounded px-2 py-1 my-5 ml-5 hover:shadow-md hover:bg-green-500 hover:text-gray-200"
+          onclick="window.location.href='/signout'">
+          Log out
+        </button>
+      </div>
+        <form class="py-2 my-1" action="/todos" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="flex gap-2 my-2">
             <div class="flex-auto">
-              <input
-                type="text"
-                
-                name="title"
-                class="border border-gray-700 text-gray-700 w-full rounded h-10 px-1"
-                placeholder="What are you up to?"
-              />
+              <input type="text" name="title" class="border border-gray-700 text-gray-700 w-full rounded h-10 px-1"
+                placeholder="What are you up to?" />
             </div>
             <div class="flex-auto">
-              <input
-                type="date"
-              
-                name="dueDate"
-                class="border border-gray-700 text-gray-500 w-full rounded h-10 px-1"
-              />
+              <input type="date" name="dueDate" class="border border-gray-700 text-gray-500 w-full rounded h-10 px-1" />
             </div>
             <div class="flex-none">
               <button
                 class="bg-green-400 text-gray-700 rounded px-3 py-2 hover:shadow-md hover:bg-green-500 hover:text-gray-200"
-                type="submit"
-              >
+                type="submit">
                 Add
               </button>
             </div>
           </div>
         </form>
         <div>
-          <%- include('todos.ejs', {title: "Overdue", data: overdueItems}) %>
-          <%- include('todos.ejs', {title: "Due Today", data: dueTodayItems}) %>
-          <%- include('todos.ejs', {title: "Due Later", data: dueLaterItems}) %>
-          <%- include('todos.ejs', {title: "Completed Items", data: completedItems}) %>
+          <%- include('todos.ejs', {title: "Overdue" , data: overdueItems}) %>
+            <%- include('todos.ejs', {title: "Due Today" , data: dueTodayItems}) %>
+              <%- include('todos.ejs', {title: "Due Later" , data: dueLaterItems}) %>
+                <%- include('todos.ejs', {title: "Completed Items" , data: completedItems}) %>
         </div>
-        <% if(messages && messages.error && messages.error.length > 0)  { %>
+        <% if(messages && messages.error && messages.error.length> 0) { %>
           <% for(var i=0; i<messages.error.length; i++) { %>
-                  <div class="bg-red-700 mt-4 py-2 px-3 rounded shadow-lg font-mono font-semibold">Error: <%= messages.error[i] %> !!</div>
-          <% } %>
-        <% } %>
-      </div>
+            <div class="bg-red-700 mt-4 py-2 px-3 rounded shadow-lg font-mono font-semibold">Error: <%=
+                messages.error[i] %> !!</div>
+            <% } %>
+              <% } %>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

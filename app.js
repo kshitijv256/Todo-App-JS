@@ -21,7 +21,7 @@ app.use(flash());
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser("some_secret"));
+app.use(cookieParser("some other secret string"));
 // ["POST", "PUT", "DELETE"]));
 app.use(csrf({ cookie: true }));
 // app.use(csrf("123456789iamasecret987654321look", // secret -- must be 32 bits or chars in length
@@ -29,7 +29,7 @@ app.use(csrf({ cookie: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    secret: "another-secret",
+    secret: "secret-key-that-no-one-can-guess",
     cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
   })
 );
@@ -88,10 +88,14 @@ app.use(function (request, response, next) {
 app.set("view engine", "ejs");
 
 app.get("/", async function (request, response) {
-  response.render("index", {
-    title: "Todo App",
-    csrfToken: request.csrfToken(),
-  });
+  if (request.user) {
+    return response.redirect("/todos");
+  } else {
+    return response.render("index", {
+      title: "Todo App",
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 
 app.get("/signup", (request, response) => {
@@ -131,6 +135,8 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     const userId = request.user.id;
+    const userAcc = await User.findByPk(userId);
+    const userName = userAcc.firstName + " " + userAcc.lastName;
     const overdueItems = await Todo.overdue(userId);
     const dueTodayItems = await Todo.dueToday(userId);
     const dueLaterItems = await Todo.dueLater(userId);
@@ -142,6 +148,7 @@ app.get(
         dueTodayItems,
         dueLaterItems,
         completedItems,
+        userName,
         csrfToken: request.csrfToken(),
       });
     } else {
@@ -150,6 +157,7 @@ app.get(
         dueTodayItems,
         dueLaterItems,
         completedItems,
+        userName,
       });
     }
   }

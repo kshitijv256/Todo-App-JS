@@ -241,14 +241,20 @@ app.put(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     const todo = await Todo.findByPk(request.params.id);
-    try {
-      const updatedTodo = await todo.setCompletionStatus(
-        request.body.completed
-      );
-      return response.json(updatedTodo);
-    } catch (error) {
-      console.log(error);
-      return response.status(422).json(error);
+    if (todo.userId === request.user.id) {
+      try {
+        const updatedTodo = await todo.setCompletionStatus(
+          request.body.completed
+        );
+        return response.json(updatedTodo);
+      } catch (error) {
+        console.log(error);
+        return response.status(422).json(error);
+      }
+    } else {
+      return response
+        .status(403)
+        .json({ error: "You are not authorized to update this todo" });
     }
   }
 );

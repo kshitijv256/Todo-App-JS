@@ -138,4 +138,53 @@ describe("Todo Application", function () {
     const parsedDeleteResponse = JSON.parse(deleteResponse.text);
     expect(parsedDeleteResponse.success).toBe(true);
   });
+  test("Check if a user can access someone else's todo", async () => {
+    // Create a new user test user 2
+    let res = await agent.get("/signup");
+    const csrfToken = extractCsrfToken(res);
+    res = await agent.post("/users").send({
+      _csrf: csrfToken,
+      firstName: "Test",
+      lastName: "User 2",
+      email: "user2@test.com",
+      password: "password",
+    });
+
+    // Add a todo to user 2
+    res = await agent.get("/todos"); // using the  page to get the csrf token
+    await agent.post("/todos").send({
+      title: "Demo Todo",
+      dueDate: new Date().toISOString(),
+      completed: false,
+      _csrf: csrfToken,
+    });
+
+    const todoID = await agent
+      .get("/todos")
+      .set("Accept", "application/json")
+      .then((response) => {
+        const parsedMixedResponse = JSON.parse(response.text);
+        const parsedResponse = parsedMixedResponse.dueTodayItems;
+        const latestTodo = parsedResponse[parsedResponse.length - 1];
+        return latestTodo.id;
+      });
+
+    // Sign out and sign in as user 1
+    await agent.get("/signout");
+    await login(agent, "user1@test.com", "password");
+
+    // Try to update the todo of user 2
+    const setCompletionResponse = await agent
+      .put(`/todos/${todoID}`)
+      .send({ completed: true, _csrf: csrfToken });
+    expect(setCompletionResponse.statusCode).toBe(403);
+
+    // Try to delete the todo of user 2
+    const deleteResponse = await agent
+      .delete(`/todos/${todoID}`)
+      .send({ _csrf: csrfToken });
+    // extract the text from the response
+    const parsedDeleteResponse = JSON.parse(deleteResponse.text);
+    expect(parsedDeleteResponse.success).toBe(true);
+  });
 });

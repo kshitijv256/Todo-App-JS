@@ -266,7 +266,12 @@ app.delete(
     console.log("Deleting a Todo with ID: ", request.params.id);
     try {
       await Todo.remove(request.params.id, request.user.id);
-      return response.json({ success: true });
+      const todos = await Todo.findByPk(request.params.id);
+      if (todos) {
+        return response.json({ success: false });
+      } else {
+        return response.json({ success: true });
+      }
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);

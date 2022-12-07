@@ -138,6 +138,7 @@ describe("Todo Application", function () {
     const parsedDeleteResponse = JSON.parse(deleteResponse.text);
     expect(parsedDeleteResponse.success).toBe(true);
   });
+
   test("Check if a user can access someone else's todo", async () => {
     // Create a new user test user 2
     let res = await agent.get("/signup");
@@ -185,6 +186,6 @@ describe("Todo Application", function () {
       .send({ _csrf: csrfToken });
     // extract the text from the response
     const parsedDeleteResponse = JSON.parse(deleteResponse.text);
-    expect(parsedDeleteResponse.success).toBe(true);
+    expect(parsedDeleteResponse.success).toBe(false);
   });
 });

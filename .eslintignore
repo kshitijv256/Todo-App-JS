@@ -1,2 +1,5 @@
 migrations
 models
+cypress
+
+cypress.config.js

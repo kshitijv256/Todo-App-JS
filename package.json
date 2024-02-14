@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "cheerio": "^1.0.0-rc.12",
+    "cypress": "^13.6.4",
     "eslint": "^8.25.0",
     "husky": "^8.0.1",
     "jest": "^29.2.1",

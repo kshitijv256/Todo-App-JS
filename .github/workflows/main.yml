@@ -2,8 +2,8 @@ name: Auto test for TodoJS
 on: push
 env:
   PG_DATABASE: todo_db_test
-  PG_USER: postgres
-  PG_PASSWORD: 1234
+  PG_USER: ${{ secrets.POSTGRES_USER }}
+  PG_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 jobs:
   # Label of the container job
   run-tests:
@@ -18,8 +18,8 @@ jobs:
         image: postgres:11.7
         # Provide the password for postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 1234
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: todo_db_test
         # Set health checks to wait until postgres has started
         options: >-

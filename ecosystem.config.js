@@ -10,7 +10,7 @@ module.exports = {
   deploy: {
     production: {
       user: "kshitij",
-      host: "127.0.0.1",
+      host: "localhost",
       ref: "origin/main",
       repo: "git@github.com:kshitijv256/Todo-App-JS.git",
       path: "/home/kshitij/Todo-App-JS",

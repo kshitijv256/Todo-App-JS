@@ -13,7 +13,7 @@ module.exports = {
       host: "localhost",
       ref: "origin/main",
       repo: "git@github.com:kshitijv256/Todo-App-JS.git",
-      path: "/home/kshitij/Todo-App-JS",
+      path: "/home/kshitij/workspace/web/Todo-App-JS",
       "post-deploy":
         "npm install && pm2 startOrRestart ecosystem.config.js --env production",
     },

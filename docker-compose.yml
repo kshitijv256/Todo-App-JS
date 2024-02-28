@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    image: todo-app:development
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: $DEV_USER
+      POSTGRES_DB: $DEV_DB
+      POSTGRES_PASSWORD: $DEV_PASSWORD
+      POSTGRES_HOST: $DEV_HOST
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    volumes:
+      - pg-dev-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: $DEV_USER
+      POSTGRES_DB: $DEV_DB
+      POSTGRES_PASSWORD: $DEV_PASSWORD
+      POSTGRES_HOST: $DEV_HOST
+
+volumes:
+  pg-dev-data:

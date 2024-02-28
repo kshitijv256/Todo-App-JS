@@ -55,4 +55,4 @@ jobs:
       - name: Run integration tests
         run: |
           npm install cypress
-          npx cypress run --spec "cypress/e2e/spec.cy.js" 
+          npx cypress run --spec "cypress/e2e/spec.cy.js"

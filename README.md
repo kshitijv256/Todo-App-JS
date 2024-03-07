@@ -14,4 +14,5 @@ using EJS and tailwindCSS
    if you are not using nodemon
 
 4. Run app using `npm start`
-5. docker configs added
+
+[Try it out](https://todo-app-js-kvh0.onrender.com/)
